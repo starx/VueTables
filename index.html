@@ -2,95 +2,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="robots" content="noindex">
-  <title>Vue - Tables</title>
-  
-  
-  
-  <script type='text/javascript' src='/js/lib/dummy.js'></script>
-  
-  
-  
-  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
-  
-    
-      <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
-    
-  
-    
-      <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-    
-  
-    
-      <script type='text/javascript' src="http://marak.com/faker.js/js/faker.js"></script>
-    
-  
-    
-      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css">
-    
-  
-  <style type='text/css'>
-    
-  </style>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex">
+    <title>Vue - Tables</title>
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script type='text/javascript' src="http://marak.com/faker.js/js/faker.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css">
+    <style type='text/css'>
+        .container{
+            margin-top:30px;
+        }
+        .flexbox{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            width: 70%;
+            align-content: stretch;
+            margin:0 auto;
+        }
+        .flexbox a,.flexbox a:active{
+            text-decoration: none;
+        }
+        .flexbox div{
+            width: 500px;
+            margin: 0;
+            text-align: center;
+            border:1px solid #ddd;
+            padding:9px;
+        }
+        .range{
+            display:block;
+            width:100%;
+            text-align: center;
+            padding:40px
+        }
+    </style>
 </head>
 <body>
-  <div id="app">
-  <div class="row">
-    <div class="col-sm-6">
-      Show: 
-      <select v-model="page_limit" v-bind:value="page_limit">
-        <option v-for="limit in page_limit_options" v-bind:value="limit">{{ limit }}</option>
-      </select>
-    </div> 
-    <div class="col-sm-6">
-      Search: <input type="text" v-model="filter_text" />
+<div id="app" class="container">
+    <div class="row">
+
+
+        <div class="col-sm-6">
+            Show:
+            <select v-model="page_limit" v-bind:value="page_limit" v-on:change="resetView">
+                <option v-for="limit in page_limit_options" v-bind:value="limit">{{ limit }}</option>
+            </select>
+        </div>
+
+
+        <div class="col-sm-6">
+            Search: <input type="text" v-model="filter_text" />
+        </div>
     </div>
-  </div>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Date</th>
-        <th>Edit</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="row in rowData" v-bind:value="row.id" data-index="{{ $index }}">
-        <td>{{ row.id }}</td>
-        <td>{{ row.date }}</td>
-        <td><a href="edit/{{ row.id }}">Edit</a></td>
-        <td>{{ row.name }}</td>
-        <td>{{ row.moreData }}</td>
-        <td><a href="{{ row.url }}">Link</a></td>
-      </tr>
-    </tbody>
-  </table>
-  Showing {{ range_start }} - {{ range_end }}
-  <ul class="pagination">
-    <li>
-      <a href="#" aria-label="Previous" v-on:click="changePage" data-page="{{ prev_page }}">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    <li v-for="n in pagination_range">
-      <a href="#" v-on:click="changePage" data-page="{{ n }}">{{ n }}</a>
-    </li>
-    <li>
-      <a href="#" aria-label="Next" v-on:click="changePage" data-page="{{ next_page }}">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-  <ul>
-  </ul>
-  <pre>{{ $data | json }}</pre>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Edit</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr v-for="row in rowData" v-bind:value="row.id" data-index="{{ $index }}">
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.date }}</td>
+                    <td><a href="edit/{{ row.id }}">Edit</a></td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.moreData }}</td>
+                    <td><a href="{{ row.url }}">Link</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="range">Showing results {{ range_start + 1  }} - {{ range_end }}</div>
+
+    <div class="flexbox">
+        <div>
+            <a href="#" aria-label="Previous" v-on:click="changePage" data-page="{{ prev_page }}">
+                <span aria-hidden="true" v-on:click="changePage" data-page="{{ prev_page }}">&laquo;</span>
+            </a>
+        </div>
+        <div v-if="show_first">
+            <a href="#" aria-label="First" v-on:click="changePage" data-page="{{1}}">
+                <span aria-hidden="true" v-on:click="changePage" data-page="{{1}}">1...</span>
+            </a>
+        </div>
+        <div v-for="n in pagination_range" v-bind:class="[active_page ? active-page : '']">
+            <a href="#" v-on:click="changePage" data-page="{{ n }}">{{ n }}</a>
+        </div>
+        <div v-if="show_last">
+            <a href="#" aria-label="Last" v-on:click="changePage" data-page="{{ page_count }}">
+                <span aria-hidden="true" v-on:click="changePage" data-page="{{ page_count }}">...{{page_count}}</span>
+            </a>
+        </div>
+        <div>
+            <a href="#" aria-label="Next" v-on:click="changePage" data-page="{{ next_page }}">
+                <span aria-hidden="true" v-on:click="changePage" data-page="{{ next_page }}">&raquo;</span>
+            </a>
+        </div>
+    </div>
+
+    <ul>
+    </ul>
+    <pre>{{ $dadfta | json }}</pre>
 </div>
 <script type='text/javascript' src="app.js"></script>
-  
+
 </body>
 
 </html>
