@@ -33,80 +33,20 @@
   <style type='text/css'>
     
   </style>
-  
-
-
-
-
-<script type='text/javascript'>//<![CDATA[
-window.onload=function(){
-Vue.config.debug = true;
-new Vue({
-  el: '#app',
-  data: {
-    page: 1,
-    page_limit: 5,
-    data:[]
-  },
-  computed: {
-  	range_start: function() {
-    	return (this.page-1) * this.page_limit;
-    },
-    range_end: function() {
-    	return this.page * this.page_limit;
-    },
-    page_count: function() {
-    	return Math.ceil(this.data.length/this.page_limit);
-    },
-    pagination_range: function() {
-    	var start = this.page > 3 ? this.page-3 : 1;
-      var end = this.page+3 > this.page_count ? this.page_count + 1 : this.page+3;
-    	return _.range(start, end);
-    },
-    next_page: function() {
-    	return this.page + 1 > this.page_count ? 
-      	this.page_count :
-        this.page + 1;
-    },
-    prev_page: function() {
-    	return this.page-1 > 1 ? this.page-1 : 1;
-    },
-    rowData: function() {
-    	return this.data.slice(this.range_start, this.range_end);
-    }
-  },
-  methods: {
-    changePage: function(event) {
-    	var el = event.target;
-      var requestedPage = el.getAttribute('data-page');
-      this.page = parseInt(requestedPage);
-  	}
-  },
-  ready: function() {    
-    var that = this;
-    //this.selectedType = this.types[0];
-    setInterval(function() {
-    	var row_date = faker.date.past();
-      row_date = row_date.getFullYear() + "-" + row_date.getMonth() + "-" + row_date.getDate();
-      
-      that.data.push({
-      	id: faker.random.number(),
-        date: row_date,
-      	name: faker.name.findName(),
-        url: faker.internet.url(),
-      	moreData: faker.company.companyName()
-    	});
-    }, 1000);
-  },
-});
-}//]]> 
-
-</script>
-
 </head>
 <body>
   <div id="app">
-
+  <div class="row">
+    <div class="col-sm-6">
+      Show: 
+      <select v-model="page_limit" v-bind:value="page_limit">
+        <option v-for="limit in page_limit_options" v-bind:value="limit">{{ limit }}</option>
+      </select>
+    </div> 
+    <div class="col-sm-6">
+      Search: <input type="text" v-model="filter_text" />
+    </div>
+  </div>
   <table class="table">
     <thead>
       <tr>
@@ -147,8 +87,9 @@ new Vue({
   </ul>
   <ul>
   </ul>
-  <pre>{{ pagination_range | json }}</pre>
+  <pre>{{ $data | json }}</pre>
 </div>
+<script type='text/javascript' src="app.js"></script>
   
 </body>
 
