@@ -38,6 +38,18 @@
             text-align: center;
             padding:40px
         }
+        .active-page{
+            background-color:#0275d8;
+        }
+        .active-page a{
+            color:white;
+        }
+        .arrow-left{
+            flex: 0 0 50px;
+        }
+        .arrow-right{
+            flex: 0 0 50px;
+        }
     </style>
 </head>
 <body>
@@ -89,8 +101,8 @@
     <div class="range">Showing results {{ range_start + 1  }} - {{ range_end }}</div>
 
     <div class="flexbox">
-        <div>
-            <a href="#" aria-label="Previous" v-on:click="changePage" data-page="{{ prev_page }}">
+        <div class="arrow-left">
+            <a href="#">
                 <span aria-hidden="true" v-on:click="changePage" data-page="{{ prev_page }}">&laquo;</span>
             </a>
         </div>
@@ -99,16 +111,18 @@
                 <span aria-hidden="true" v-on:click="changePage" data-page="{{1}}">1...</span>
             </a>
         </div>
-        <div v-for="n in pagination_range" v-bind:class="[active_page ? active-page : '']">
-            <a href="#" v-on:click="changePage" data-page="{{ n }}">{{ n }}</a>
-        </div>
+        <template v-for="n in pagination_range">
+            <div  class="{{ n == page ? 'active-page' : '' }}">
+                <a href="#" v-on:click="changePage" data-page="{{ n }}">{{ n }}</a>
+            </div>
+        </template>
         <div v-if="show_last">
             <a href="#" aria-label="Last" v-on:click="changePage" data-page="{{ page_count }}">
                 <span aria-hidden="true" v-on:click="changePage" data-page="{{ page_count }}">...{{page_count}}</span>
             </a>
         </div>
-        <div>
-            <a href="#" aria-label="Next" v-on:click="changePage" data-page="{{ next_page }}">
+        <div class="arrow-right">
+            <a href="#">
                 <span aria-hidden="true" v-on:click="changePage" data-page="{{ next_page }}">&raquo;</span>
             </a>
         </div>

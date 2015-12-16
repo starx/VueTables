@@ -11,9 +11,7 @@ new Vue({
         show_last:false
     },
     computed: {
-        active_page:function(){
-            return true;
-        },
+
         range_start: function() {
             return (this.page-1) * this.page_limit;
         },
@@ -77,6 +75,7 @@ new Vue({
         },
         resetView:function(){
             this.page = 1;
+            this.show_first = false;
         }
     },
 
