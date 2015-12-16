@@ -56,7 +56,6 @@
 <div id="app" class="container">
     <div class="row">
 
-
         <div class="col-sm-6">
             Show:
             <select v-model="page_limit" v-bind:value="page_limit" v-on:change="resetView">
@@ -66,27 +65,22 @@
 
 
         <div class="col-sm-6">
-            Search: <input type="text" v-model="filter_text" />
+            Search: <input type="text" v-model="filter_text" v-on:key-up="resetView"/>
         </div>
     </div>
-
 
     <div class="row">
         <div class="col-xs-12">
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Edit</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
+                    <th v-for="item in table_headers">{{item}} <a href="#" v-on:click="change_order" data-ordering="{{item}}">f</a></th>
+
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr v-for="row in rowData" v-bind:value="row.id" data-index="{{ $index }}">
+                <tr v-for="row in rowData" v-bind:value="row.id">
                     <td>{{ row.id }}</td>
                     <td>{{ row.date }}</td>
                     <td><a href="edit/{{ row.id }}">Edit</a></td>
@@ -130,7 +124,7 @@
 
     <ul>
     </ul>
-    <pre>{{ $dadfta | json }}</pre>
+    <pre>{{ order | json }}</pre>
 </div>
 <script type='text/javascript' src="app.js"></script>
 

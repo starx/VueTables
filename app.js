@@ -1,4 +1,16 @@
 Vue.config.debug = true;
+function dynamicSort(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
+
 new Vue({
     el: '#app',
     data: {
@@ -8,7 +20,10 @@ new Vue({
         filter_text: '',
         data:[],
         show_first:false,
-        show_last:false
+        show_last:false,
+        table_headers:['Id','Date','Edit','Name','Description','Actions'],
+        sorting:'',
+        sorting_order:'desc'
     },
     computed: {
 
@@ -37,7 +52,7 @@ new Vue({
         tableData: function() {
             if(this.filter_text.length) {
                 var filter_text = this.filter_text;
-                return this.data.filter(function(row) {
+                var filtered_data = this.data.filter(function(row) {
                     var rowValues = _.values(row);
                     var found = false;
                     rowValues.every(function(fieldValue) {
@@ -49,6 +64,10 @@ new Vue({
                     });
                     return found;
                 });
+                console.log('here');
+                filtered_data = _.sortBy( filtered_data, this.sorting )
+                blah();
+                return filtered_data;
             }
             return this.data;
         },
@@ -73,9 +92,25 @@ new Vue({
                 this.show_first = false;
             }
         },
+        change_order:function(e){
+            var el = e.target;
+            var ordering = el.getAttribute('data-ordering');
+            if(ordering == this.sorting){
+                this.sorting_order = this.sorting_order == 'asc'?'desc':'asc';
+            }else{
+                this.sorting = ordering;
+                this.sorting_order = 'desc';
+            }
+            console.log(this.sorting)
+            console.info(this.sorting_order)
+        },
         resetView:function(){
-            this.page = 1;
-            this.show_first = false;
+            if(this.page>this.page_count){
+                this.page = this.page_count;
+                this.show_first = true;
+            }
+            this.show_first = true;
+            this.show_last = false;
         }
     },
 
@@ -108,5 +143,6 @@ new Vue({
         if(this.page_count > this.range_end){
             this.show_last = true;
         }
+        this.sorting = this.table_headers[0]
     },
 });
