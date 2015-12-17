@@ -93,7 +93,7 @@ new Vue({
                 this.show_first = false;
             }
         },
-        change_order:function(e){
+        changeOrder:function(e){
             var el = e.target;
             var ordering = el.getAttribute('data-ordering');
             if(ordering == this.sorting){
