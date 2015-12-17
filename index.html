@@ -7,6 +7,7 @@
     <title>Vue - Tables</title>
     <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.10/vue.js"></script>
     <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script type='text/javascript' src="lib/lockr.js"></script>
     <script type='text/javascript' src="http://marak.com/faker.js/js/faker.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css">
     <style type='text/css'>
@@ -74,7 +75,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th v-for="item in table_headers">{{item}} <a href="#" v-on:click="change_order" data-ordering="{{item}}">f</a></th>
+                    <th v-for="item in table_headers">{{item}} <a href="#" v-on:click="changeOrder" data-ordering="{{item}}">f</a></th>
 
                 </tr>
                 </thead>
@@ -126,7 +127,22 @@
     </ul>
     <pre>{{ data | json }}</pre>
 </div>
+<script type="text/javascript">
+    var global_data = [];
+    for (i = 0; i < 100; i++) {
+        var row_date = faker.date.past();
+        row_date = row_date.getFullYear() + "-" + row_date.getMonth() + "-" + row_date.getDate();
+        global_data.push({
+            id: faker.random.number(),
+            date: row_date,
+            name: faker.name.findName(),
+            url: faker.internet.url(),
+            company: faker.company.companyName()
+        })
+    };
+</script>
 <script type='text/javascript' src="app.js"></script>
+<script type='text/javascript' src="data_spoofer.js"></script>
 
 </body>
 

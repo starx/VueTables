@@ -17,13 +17,19 @@ new Vue({
         page: 1,
         page_limit: 10,
         page_limit_options: [5, 10, 25, 100],
-        filter_text: '',
-        data:[],
         show_first:false,
         show_last:false,
-        table_headers:['Id','Date','Edit','Name','Company','Actions'],
+
+        filter_text: '',
+
         sorting:'',
-        sorting_order:'desc'
+        sorting_order:'desc',
+
+        poll_frequency: 0,
+        data_source: 'internal',
+        data_source_name: 'global_data',
+        table_headers:['Id','Date','Edit','Name','Company','Actions'],
+        data:[],
     },
     computed: {
 
@@ -119,30 +125,22 @@ new Vue({
 
     ready: function() {
         var that = this;
-        //this.selectedType = this.types[0];
-        //setInterval(function() {
-        //	var row_date = faker.date.past();
-        //  row_date = row_date.getFullYear() + "-" + row_date.getMonth() + "-" + row_date.getDate();
-        //
-        //  that.data.push({
-        //  	id: faker.random.number(),
-        //    date: row_date,
-        //  	name: faker.name.findName(),
-        //    url: faker.internet.url(),
-        //  	moreData: faker.company.companyName()
-        //	});
-        //}, 3000);
-        for (i = 0; i < 1000; i++) {
-            var row_date = faker.date.past();
-            row_date = row_date.getFullYear() + "-" + row_date.getMonth() + "-" + row_date.getDate();
-            that.data.push({
-                id: faker.random.number(),
-                date: row_date,
-                name: faker.name.findName(),
-                url: faker.internet.url(),
-                company: faker.company.companyName()
-            })
-        };
+        var data_souce = this.data_source;
+        var localStorageIntervel, ajaxInterval;
+        switch(this.data_source) {
+            case "local_storage":
+                var poll_frequency = this.poll_frequency;
+                localStorageIntervel = setInterval(function() {
+                    var localStorageData = Lockr.get(this.data_source_name);
+
+                }, poll_frequency);
+            break;
+            default:
+                this.data = window[this.data_source_name];
+                clearInterval(localStorageIntervel);
+                clearInterval(ajaxInterval);
+            break;
+        }
 
         if(this.page_count > this.range_end){
             this.show_last = true;
