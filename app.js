@@ -15,13 +15,13 @@ new Vue({
     el: '#app',
     data: {
         page: 1,
-        page_limit: 5,
+        page_limit: 10,
         page_limit_options: [5, 10, 25, 100],
         filter_text: '',
         data:[],
         show_first:false,
         show_last:false,
-        table_headers:['Id','Date','Edit','Name','Description','Actions'],
+        table_headers:['Id','Date','Edit','Name','Company','Actions'],
         sorting:'',
         sorting_order:'desc'
     },
@@ -50,6 +50,10 @@ new Vue({
             return this.page-1 > 1 ? this.page-1 : 1;
         },
         tableData: function() {
+            this.data = _.sortBy( this.data, this.sorting.toLowerCase());
+            if(this.sorting_order == 'asc'){
+                this.data = this.data.reverse();
+            }
             if(this.filter_text.length) {
                 var filter_text = this.filter_text;
                 var filtered_data = this.data.filter(function(row) {
@@ -64,9 +68,7 @@ new Vue({
                     });
                     return found;
                 });
-                console.log('here');
-                filtered_data = _.sortBy( filtered_data, this.sorting )
-                blah();
+
                 return filtered_data;
             }
             return this.data;
@@ -80,7 +82,6 @@ new Vue({
             var el = event.target;
             var requestedPage = el.getAttribute('data-page');
             this.page = parseInt(requestedPage);
-            console.log(this.page_count)
             if(this.page_count > this.page + 2){
                 this.show_last = true;
             }else{
@@ -101,6 +102,7 @@ new Vue({
                 this.sorting = ordering;
                 this.sorting_order = 'desc';
             }
+
             console.log(this.sorting)
             console.info(this.sorting_order)
         },
@@ -137,12 +139,15 @@ new Vue({
                 date: row_date,
                 name: faker.name.findName(),
                 url: faker.internet.url(),
-                moreData: faker.company.companyName()
+                company: faker.company.companyName()
             })
         };
+
         if(this.page_count > this.range_end){
             this.show_last = true;
         }
         this.sorting = this.table_headers[0]
+        this.data = _.sortBy(this.data,this.sorting.toLowerCase());
+        console.log(this.sorting);
     },
 });
