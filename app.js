@@ -25,13 +25,13 @@ new Vue({
         sorting:'',
         sorting_order:'desc',
 
-        poll_frequency: 0,
-        data_source: 'internal',
-        data_source_name: 'global_data',
+        poll_frequency: 500,
+        data_source: 'local_storage',
+        data_source_name: 'VueTablesDataSource',
         table_headers:['Id','Date','Edit','Name','Company','Actions'],
         data:[],
 
-        dev: false
+        dev: true
     },
     computed: {
 
@@ -122,28 +122,31 @@ new Vue({
             }
             this.show_first = true;
             this.show_last = false;
+        },
+        initDataSource:function() {
+            var that = this;
+            var data_source = this.data_source;
+            var localStorageIntervel, ajaxInterval;
+            switch(this.data_source) {
+                case "local_storage":
+                    var poll_frequency = this.poll_frequency;
+                    localStorageIntervel = setInterval(function() {
+                        var localStorageData = Lockr.get(that.data_source_name);
+                        that.data = localStorageData;
+                    }, poll_frequency);
+                break;
+                default:
+                    this.data = window[this.data_source_name];
+                    clearInterval(localStorageIntervel);
+                    clearInterval(ajaxInterval);
+                break;
+            }
         }
     },
 
     ready: function() {
         var that = this;
-        var data_souce = this.data_source;
-        var localStorageIntervel, ajaxInterval;
-        switch(this.data_source) {
-            case "local_storage":
-                var poll_frequency = this.poll_frequency;
-                localStorageIntervel = setInterval(function() {
-                    var localStorageData = Lockr.get(this.data_source_name);
-
-                }, poll_frequency);
-            break;
-            default:
-                this.data = window[this.data_source_name];
-                clearInterval(localStorageIntervel);
-                clearInterval(ajaxInterval);
-            break;
-        }
-
+        this.initDataSource();
         if(this.page_count > this.range_end){
             this.show_last = true;
         }
