@@ -123,11 +123,21 @@
         </div>
     </div>
 
-    <ul>
-    </ul>
-    <pre>{{ data | json }}</pre>
+    <div class="dev_console" v-show="dev">
+        Data Source:
+        <select v-model="data_source">
+            <option value="internal">Internal Javascript Source</option>
+            <option value="local_storage">Local Storage</option>
+            <option value="ajax">AJAX Path</option>
+        </select>
+        <br />
+        Data Source name:
+        <input type="text" v-model="data_source_name" />
+        <pre>{{ data | json }}</pre>
+    </div>
 </div>
 <script type="text/javascript">
+    //Replicate internal data_source
     var global_data = [];
     for (i = 0; i < 100; i++) {
         var row_date = faker.date.past();

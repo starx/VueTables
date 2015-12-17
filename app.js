@@ -30,6 +30,8 @@ new Vue({
         data_source_name: 'global_data',
         table_headers:['Id','Date','Edit','Name','Company','Actions'],
         data:[],
+
+        dev: false
     },
     computed: {
 
