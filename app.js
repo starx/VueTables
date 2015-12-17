@@ -54,13 +54,14 @@ new Vue({
             if(this.sorting_order == 'asc'){
                 this.data = this.data.reverse();
             }
+            // Check if the filter text is present and filter based on that
             if(this.filter_text.length) {
-                var filter_text = this.filter_text;
+                var filter_text = this.filter_text.toLowerCase();
                 var filtered_data = this.data.filter(function(row) {
                     var rowValues = _.values(row);
                     var found = false;
                     rowValues.every(function(fieldValue) {
-                        if(fieldValue.toString().indexOf(filter_text) >= 0) {
+                        if(fieldValue.toString().toLowerCase().indexOf(filter_text) >= 0) {
                             found = true;
                             return false;
                         }
